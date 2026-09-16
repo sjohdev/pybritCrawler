@@ -1,19 +1,17 @@
 import argparse
 from bs4 import BeautifulSoup # this module helps in web scrapping.
 import requests  # this module helps us to download a web page
-
-def filter_searchString(searchString):
-    # Ensures the string searchString only contains valid words separated by spaces
-    # deletes all special characters
-    
-    
+ 
 argParser = argparse.ArgumentParser()
 argParser.add_argument("website", choices=['https://www.britannica.com', 'https://www.wikipedia.org'], default='https://www.wikipedia.org', help="write the website to search (e.g. https://www.google.com)")
 argParser.add_argument("searchword", help="write your web searchword here")
 args = argParser.parse_args()
-# user input: searchstring
 website = args.website
 usrSearch = args.searchword
+
+# detects any occurrences of the special characters in the searchword: 
+if (len(set(usrSearch) & set(',;.:-_*^<>|!"@#£¤$%/{([)]=}?+\´`±§½$"')) > 0):
+    raise ValueError("My Error: searchword contains special characters!")
 
 # Fetch html doc:
 # IMPORTANT: the url definition is vulnerable to malicious injection
@@ -24,7 +22,6 @@ elif (website == 'https://www.wikipedia.org'):
     url = website + "/wiki/" + usrSearch
 else:
     raise ValueError("My Error: invalid website input!")
-
 print(f"Target URL:\n{url}")
 
 #r = requests.get(url, timeout=30)
